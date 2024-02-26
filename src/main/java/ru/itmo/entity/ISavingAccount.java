@@ -1,5 +1,5 @@
 package ru.itmo.entity;
 
-public interface IFinancialService {
+public interface ISavingAccount {
     void getInterest(Double ratioInterestRate);
 }

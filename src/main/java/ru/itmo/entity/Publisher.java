@@ -14,9 +14,10 @@ public class Publisher {
         subscribers.remove(subscriber);
     }
 
-    protected void notifyObservers(String message) {
+    protected void notifyObservers(String message, Class<?> targetType) {
         for (ISubscriber subscriber : subscribers) {
-            subscriber.update(message);
+            if (targetType.isInstance(subscriber))
+                subscriber.update(message);
         }
     }
 }

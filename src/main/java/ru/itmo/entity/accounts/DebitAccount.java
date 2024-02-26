@@ -1,15 +1,17 @@
 package ru.itmo.entity.accounts;
 
-import ru.itmo.entity.IFinancialService;
+import ru.itmo.entity.ISavingAccount;
+import ru.itmo.entity.Transaction;
 import ru.itmo.model.Client;
+import ru.itmo.type.OperationType;
 
 
-public class DebitAccount extends Account implements IFinancialService {
+public class DebitAccount extends Account implements ISavingAccount {
 
     private Double accumulatedInterest = 0.0;
 
-    public DebitAccount(Client owner) {
-        super(owner);
+    public DebitAccount(Client owner, long idAccount) {
+        super(owner, idAccount);
     }
 
     @Override
@@ -17,6 +19,7 @@ public class DebitAccount extends Account implements IFinancialService {
         if (amountMoney <= balance) {
             balance -= amountMoney;
             System.out.println("Снятие на сумму: " + amountMoney);
+            transactions.add(new Transaction(idTransactionCounter++, getIdAccount(), amountMoney, new OperationType.Withdraw()));
         } else {
             System.out.println("Недостаточно средств на счете");
         }

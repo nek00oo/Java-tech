@@ -10,8 +10,8 @@ public class CentralBank {
         banks = new ArrayList<>();
     }
 
-    public Bank CreateBank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount){
-        Bank newBank = new Bank(ratioInterestRate, creditLimit, maxWithdrawalAmountForQuestionableAccount);
+    public Bank CreateBank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount, Double commission){
+        Bank newBank = new Bank(ratioInterestRate, creditLimit, maxWithdrawalAmountForQuestionableAccount, commission);
         banks.add(newBank);
         return newBank;
     }
