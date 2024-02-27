@@ -14,9 +14,9 @@ import ru.itmo.type.OperationType;
  * @version 1.0
  * @since 2024-02-27
  */
-public class DebitAccountI extends Account implements IInterestReceivable {
+public class DebitAccount extends Account implements IInterestReceivable {
 
-    public DebitAccountI(IClient owner, Long idAccount) {
+    public DebitAccount(IClient owner, Long idAccount) {
         super(owner, idAccount);
     }
 

@@ -4,8 +4,8 @@ import ru.itmo.entity.IInterestReceivable;
 import ru.itmo.entity.Publisher;
 import ru.itmo.entity.accounts.Account;
 import ru.itmo.entity.accounts.CreditAccount;
-import ru.itmo.entity.accounts.DebitAccountI;
-import ru.itmo.entity.accounts.DepositAccountI;
+import ru.itmo.entity.accounts.DebitAccount;
+import ru.itmo.entity.accounts.DepositAccount;
 import ru.itmo.model.client.IClient;
 
 import java.util.ArrayList;
@@ -77,8 +77,8 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return DebitAccount
      */
     @Override
-    public DebitAccountI createDebitAccount(IClient owner) {
-        DebitAccountI newAccount = new DebitAccountI(owner, idAccountCounter++);
+    public DebitAccount createDebitAccount(IClient owner) {
+        DebitAccount newAccount = new DebitAccount(owner, idAccountCounter++);
         accounts.add(newAccount);
         return newAccount;
     }
@@ -92,8 +92,8 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return DepositAccount
      */
     @Override
-    public DepositAccountI createDepositAccount(IClient owner, Double startAmountMoney, Date dateEndTerm) {
-        DepositAccountI newAccount = new DepositAccountI(owner, startAmountMoney, idAccountCounter++, dateEndTerm);
+    public DepositAccount createDepositAccount(IClient owner, Double startAmountMoney, Date dateEndTerm) {
+        DepositAccount newAccount = new DepositAccount(owner, startAmountMoney, idAccountCounter++, dateEndTerm);
         accounts.add(newAccount);
         return newAccount;
     }

@@ -13,7 +13,7 @@ public class Client implements IClient {
     private String address;
     private String passportNumber;
 
-    Client(String firstName, String lastName, String address, String passportNumber){
+    Client(String firstName, String lastName, String address, String passportNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -22,7 +22,8 @@ public class Client implements IClient {
 
     /**
      * a method that determines whether a class is not questionable
-     * @return boolean
+     *
+     * @return True if the client is reliable and false in other
      */
     public boolean hasCompleteInformation() {
         return address != null && passportNumber != null;

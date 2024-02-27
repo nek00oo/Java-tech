@@ -14,12 +14,12 @@ import java.util.Date;
  * Implements the interface {@link IInterestReceivable}
  */
 @Getter
-public class DepositAccountI extends Account implements IInterestReceivable {
+public class DepositAccount extends Account implements IInterestReceivable {
     private final Double startAmount;
     private Double accumulatedInterest;
     private Date dateEndTerm;
 
-    public DepositAccountI(IClient owner, Double startAmount, Long idAccount, Date dateEndTerm) {
+    public DepositAccount(IClient owner, Double startAmount, Long idAccount, Date dateEndTerm) {
         super(owner, idAccount);
         if (startAmount < 0)
             throw new IllegalArgumentException("The start amount must be positive");

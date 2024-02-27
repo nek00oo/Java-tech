@@ -2,7 +2,7 @@ package ru.itmo;
 
 import ru.itmo.entity.banks.Bank;
 import ru.itmo.entity.banks.CentralBank;
-import ru.itmo.entity.accounts.DebitAccountI;
+import ru.itmo.entity.accounts.DebitAccount;
 import ru.itmo.model.client.ClientBuilder;
 import ru.itmo.model.client.IClient;
 
@@ -13,7 +13,7 @@ public class Main {
         IClient client = new ClientBuilder()
                 .addFirstname("Nikita")
                 .addLastname("Podyshkin").build();
-        DebitAccountI debitAccount = sberbank.createDebitAccount(client);
+        DebitAccount debitAccount = sberbank.createDebitAccount(client);
         debitAccount.deposit(500.0);
     }
 }
