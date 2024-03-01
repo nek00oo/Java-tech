@@ -31,7 +31,7 @@ public interface IFinancialOperationManager {
      * @param amountMoney  The amount of money to withdraw.
      * @return True if the withdrawal was successful, false otherwise.
      */
-    boolean withdraw(long idAccount, Double amountMoney);
+    boolean withdraw(Long idAccount, Double amountMoney);
 
     /**
      * Deposit money into a specified account.
@@ -40,7 +40,9 @@ public interface IFinancialOperationManager {
      * @param amountMoney  The amount of money to deposit.
      * @return True if the deposit was successful, false otherwise.
      */
-    boolean deposit(long idAccount, Double amountMoney);
+    boolean deposit(Long idAccount, Double amountMoney);
+
+    boolean transfer(Long idSenderAccount, Long idRecipientAccount, Double amountMoney);
 
     /**
      * Cancel a transaction for a specified account.
@@ -49,6 +51,6 @@ public interface IFinancialOperationManager {
      * @param idTransaction  The ID of the transaction to cancel.
      * @return True if the transaction cancellation was successful, false otherwise.
      */
-    boolean cancellationTransaction(long idAccount, long idTransaction);
+    boolean cancellationTransaction(Long idAccount, Long idTransaction);
 }
 

@@ -1,6 +1,7 @@
 package ru.itmo.model.client;
 
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * The client's class, the {@link ClientBuilder} is used to create it
@@ -8,10 +9,13 @@ import lombok.Getter;
 
 @Getter
 public class Client implements IClient {
+    @NonNull
     private final String firstName;
+    @NonNull
     private final String lastName;
     private String address;
     private String passportNumber;
+
 
     Client(String firstName, String lastName, String address, String passportNumber) {
         this.firstName = firstName;

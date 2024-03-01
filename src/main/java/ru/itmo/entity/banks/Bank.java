@@ -1,5 +1,6 @@
 package ru.itmo.entity.banks;
 
+import lombok.NonNull;
 import ru.itmo.entity.IInterestReceivable;
 import ru.itmo.entity.Publisher;
 import ru.itmo.entity.accounts.Account;
@@ -11,6 +12,7 @@ import ru.itmo.model.client.IClient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The bank class, through which accounts are created, and interaction with accounts is performed.
@@ -23,7 +25,7 @@ import java.util.List;
  * @since 2024-02-27
  */
 
-public class Bank extends Publisher implements IAccountCreatable, IFinancialOperationManager {
+public class Bank extends Publisher implements IBank {
     private long idAccountCounter;
     private final List<Account> accounts;
     private Double maxWithdrawalAmountForQuestionableAccount;
@@ -39,16 +41,6 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @throws IllegalArgumentException if the passed parameter is incorrect
      */
     Bank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount, Double commission) {
-        //TODO вынести проверки в отдельный класс ?
-        if (maxWithdrawalAmountForQuestionableAccount <= 0)
-            throw new IllegalArgumentException("The withdrawal amount must be positive");
-        if (commission <= 0)
-            throw new IllegalArgumentException("The commission must be positive");
-        if (ratioInterestRate < 0)
-            throw new IllegalArgumentException("The interest rate must not be negative");
-        if (creditLimit < 0)
-            throw new IllegalArgumentException("The credit limit must be positive");
-
         this.idAccountCounter = 0;
         this.ratioInterestRate = ratioInterestRate;
         this.creditLimit = creditLimit;
@@ -77,7 +69,7 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return DebitAccount
      */
     @Override
-    public DebitAccount createDebitAccount(IClient owner) {
+    public DebitAccount createDebitAccount(@NonNull IClient owner) {
         DebitAccount newAccount = new DebitAccount(owner, idAccountCounter++);
         accounts.add(newAccount);
         return newAccount;
@@ -92,7 +84,7 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return DepositAccount
      */
     @Override
-    public DepositAccount createDepositAccount(IClient owner, Double startAmountMoney, Date dateEndTerm) {
+    public DepositAccount createDepositAccount(@NonNull IClient owner, Double startAmountMoney, Date dateEndTerm) {
         DepositAccount newAccount = new DepositAccount(owner, startAmountMoney, idAccountCounter++, dateEndTerm);
         accounts.add(newAccount);
         return newAccount;
@@ -139,9 +131,9 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return True if the withdrawal was successful, false otherwise.
      */
     @Override
-    public boolean withdraw(long idAccount, Double amountMoney) {
+    public boolean withdraw(Long idAccount, Double amountMoney) {
         return accounts.stream()
-                .filter(account -> account.getIdAccount() == idAccount)
+                .filter(account -> account.getIdAccount().equals(idAccount))
                 .findFirst()
                 .map(account -> {
                     if (!account.getOwner().hasCompleteInformation() && amountMoney > maxWithdrawalAmountForQuestionableAccount)
@@ -160,12 +152,30 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return True if the deposit was successful, false otherwise.
      */
     @Override
-    public boolean deposit(long idAccount, Double amountMoney) {
+    public boolean deposit(Long idAccount, Double amountMoney) {
         return accounts.stream()
-                .filter(account -> account.getIdAccount() == idAccount)
+                .filter(account -> account.getIdAccount().equals(idAccount))
                 .findFirst()
                 .map(account -> account.deposit(amountMoney))
                 .orElse(false);
+    }
+
+    @Override
+    public boolean transfer(Long idSenderAccount, Long idRecipientAccount, Double amountMoney) {
+        Optional<Account> senderOptional = findAccountById(idSenderAccount);
+        Optional<Account> recipientOptional = findAccountById(idRecipientAccount);
+
+        if (senderOptional.isPresent() && recipientOptional.isPresent()) {
+            Account sender = senderOptional.get();
+            Account recipient = recipientOptional.get();
+
+            if (sender.withdraw(amountMoney)) {
+                recipient.deposit(amountMoney);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -176,11 +186,17 @@ public class Bank extends Publisher implements IAccountCreatable, IFinancialOper
      * @return True if the transaction cancellation was successful, false otherwise.
      */
     @Override
-    public boolean cancellationTransaction(long idAccount, long idTransaction) {
+    public boolean cancellationTransaction(Long idAccount, Long idTransaction) {
         return accounts.stream()
-                .filter(account -> account.getIdAccount() == idAccount)
+                .filter(account -> account.getIdAccount().equals(idAccount))
                 .findFirst()
                 .map(account -> account.cancellationTransaction(idTransaction))
                 .orElse(false);
+    }
+
+    public Optional<Account> findAccountById(Long accountId) {
+        return accounts.stream()
+                .filter(account -> account.getIdAccount().equals(accountId))
+                .findFirst();
     }
 }

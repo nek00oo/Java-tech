@@ -1,5 +1,7 @@
 package ru.itmo.entity.banks;
 
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +14,13 @@ import java.util.List;
  * @since 2024-02-27
  */
 public class CentralBank {
-    private final List<Bank> banks;
+    private final List<IBank> banks;
+    @Setter
+    private IBankBuilder bankBuilder;
 
-    public CentralBank() {
+    public CentralBank(IBankBuilder bankBuilder)
+    {
+        this.bankBuilder = bankBuilder;
         banks = new ArrayList<>();
     }
 
@@ -25,17 +31,21 @@ public class CentralBank {
      * @param commission                                commission rate
      * @return Bank
      */
-    public Bank CreateBank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount, Double commission) {
-        Bank newBank = new Bank(ratioInterestRate, creditLimit, maxWithdrawalAmountForQuestionableAccount, commission);
+    public IBank CreateBank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount, Double commission) {
+        IBank newBank = bankBuilder.addRatioInterestRate(ratioInterestRate)
+                .addCreditLimit(creditLimit)
+                .addMaxWithdrawalAmountForQuestionableAccount(maxWithdrawalAmountForQuestionableAccount)
+                .addCommission(commission).build();
         banks.add(newBank);
         return newBank;
     }
+
 
     /**
      * A method for notifying banks of the need to charge interest
      */
     public void notifyInterest() {
-        for (Bank bank : banks) {
+        for (IBank bank : banks) {
             bank.processInterest();
         }
     }

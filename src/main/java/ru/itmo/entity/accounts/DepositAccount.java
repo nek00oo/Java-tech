@@ -29,9 +29,6 @@ public class DepositAccount extends Account implements IInterestReceivable {
         this.balance = startAmount;
     }
 
-
-    //TODO снять можно только когда Date.now >= dateEndTerm
-
     /**
      * the method for the operation of withdrawing money from the account,
      * it is allowed to withdraw after the expiration of the account

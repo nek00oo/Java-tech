@@ -1,6 +1,7 @@
 package ru.itmo.entity.accounts;
 
 import lombok.Getter;
+import lombok.NonNull;
 import ru.itmo.entity.ISubscriber;
 import ru.itmo.model.client.IClient;
 import ru.itmo.model.Transaction;
@@ -28,7 +29,7 @@ public abstract class Account implements ISubscriber {
     protected final List<Transaction> transactions;
     protected final List<String> messages;
 
-    Account(IClient owner, Long idAccount) {
+    Account(@NonNull IClient owner, Long idAccount) {
         this.owner = owner;
         this.idAccount = idAccount;
         this.balance = 0.0;

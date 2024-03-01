@@ -1,5 +1,8 @@
 package ru.itmo.model.client;
 
+import lombok.NonNull;
+import ru.itmo.model.client.validate.IValidatorClient;
+
 import java.lang.IllegalArgumentException;
 
 /**
@@ -10,6 +13,14 @@ public class ClientBuilder implements IClientBuilder {
     private String lastname;
     private String address;
     private String passportNumber;
+
+    private IValidatorClient validatorClient;
+
+    public ClientBuilder() {}
+
+    public ClientBuilder(IValidatorClient validatorClient){
+        this.validatorClient = validatorClient;
+    }
 
     @Override
     public IClientBuilder addFirstname(String firstname) {
@@ -38,15 +49,23 @@ public class ClientBuilder implements IClientBuilder {
     /**
      * method that creates the {@link Client}, the parameters first and last name are required
      *
-     * @throws IllegalArgumentException If the parameter is not added
      * @return IClient
      */
     @Override
     public IClient build() {
-        if (firstname == null)
-            throw new IllegalArgumentException("firstname cannot be null");
-        if (lastname == null)
-            throw new IllegalArgumentException("lastname cannot be null");
+        if (validatorClient != null){
+            try {
+                validatorClient.validateFirstname(firstname);
+                validatorClient.validateLastname(lastname);
+                if (address != null)
+                    validatorClient.validateAddress(address);
+                if (passportNumber != null)
+                    validatorClient.validatePassportNumber(passportNumber);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Validation error: " + e.getMessage());
+                return null;
+            }
+        }
 
         return new Client(
                 firstname,
