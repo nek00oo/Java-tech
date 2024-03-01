@@ -56,18 +56,15 @@ public abstract class Account implements ISubscriber {
      * @param idTransaction id of the transaction to cancel
      * @return True if the transaction cancellation was successful, false otherwise.
      */
-    public boolean cancellationTransaction(Long idTransaction) {
+    public Transaction cancellationTransaction(Long idTransaction) {
         return transactions.stream()
                 .filter(transaction -> transaction.idTransaction() == idTransaction)
                 .findFirst()
                 .map(transaction -> {
-                    if (transaction.operationType().equals(new OperationType.Transfer())) {
-                        balance += transaction.amountMoney();
-                    }
                     transactions.remove(transaction);
-                    return true;
+                    return transaction;
                 })
-                .orElse(false);
+                .orElse(null);
     }
 
     /**
@@ -77,6 +74,19 @@ public abstract class Account implements ISubscriber {
      * @return True if the withdrawal was successful, false otherwise.
      */
     public abstract boolean withdraw(Double amountMoney);
+
+    public boolean transfer(Account recipient, Double amountMoney){
+        if (balance < amountMoney)
+            return false;
+
+        if (withdraw(amountMoney)){
+            recipient.deposit(amountMoney);
+            transactions.add(new Transaction(idTransactionCounter++, idAccount, amountMoney, new OperationType.Transfer(recipient.getIdAccount())));
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     public void update(String message) {

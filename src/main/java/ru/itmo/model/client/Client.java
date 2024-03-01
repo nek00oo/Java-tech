@@ -1,5 +1,6 @@
 package ru.itmo.model.client;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -8,6 +9,7 @@ import lombok.NonNull;
  */
 
 @Getter
+@EqualsAndHashCode
 public class Client implements IClient {
     @NonNull
     private final String firstName;

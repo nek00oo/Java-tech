@@ -1,5 +1,6 @@
 package ru.itmo.entity.accounts;
 
+import lombok.Getter;
 import ru.itmo.model.client.IClient;
 import ru.itmo.model.Transaction;
 import ru.itmo.type.OperationType;
@@ -12,6 +13,7 @@ import ru.itmo.type.OperationType;
  * @version 1.0
  * @since 2024-02-27
  */
+@Getter
 public class CreditAccount extends Account {
     private Double creditLimit;
     private final Double commission;
@@ -39,7 +41,7 @@ public class CreditAccount extends Account {
         } else if (amountMoney <= balance + creditLimit) {
             double remain = amountMoney - balance;
             balance = 0.0;
-            creditLimit -= remain + remain * commission;
+            creditLimit -= (remain + remain * commission);
         }
         transactions.add(new Transaction(idTransactionCounter++, getIdAccount(), amountMoney, new OperationType.Withdraw()));
         return true;

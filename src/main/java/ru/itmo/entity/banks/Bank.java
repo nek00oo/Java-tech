@@ -7,12 +7,11 @@ import ru.itmo.entity.accounts.Account;
 import ru.itmo.entity.accounts.CreditAccount;
 import ru.itmo.entity.accounts.DebitAccount;
 import ru.itmo.entity.accounts.DepositAccount;
+import ru.itmo.model.Transaction;
 import ru.itmo.model.client.IClient;
+import ru.itmo.type.OperationType;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * The bank class, through which accounts are created, and interaction with accounts is performed.
@@ -26,12 +25,12 @@ import java.util.Optional;
  */
 
 public class Bank extends Publisher implements IBank {
-    private long idAccountCounter;
+    private Long idAccountCounter;
     private final List<Account> accounts;
-    private Double maxWithdrawalAmountForQuestionableAccount;
+    private final Double maxWithdrawalAmountForQuestionableAccount;
     private Double ratioInterestRate;
     private Double creditLimit;
-    private Double commission;
+    private final Double commission;
 
     /**
      * @param ratioInterestRate                         the interest rate ratio
@@ -41,7 +40,7 @@ public class Bank extends Publisher implements IBank {
      * @throws IllegalArgumentException if the passed parameter is incorrect
      */
     Bank(Double ratioInterestRate, Double creditLimit, Double maxWithdrawalAmountForQuestionableAccount, Double commission) {
-        this.idAccountCounter = 0;
+        this.idAccountCounter = 0L;
         this.ratioInterestRate = ratioInterestRate;
         this.creditLimit = creditLimit;
         this.commission = commission;
@@ -56,7 +55,7 @@ public class Bank extends Publisher implements IBank {
      * @return CreditAccount
      */
     @Override
-    public CreditAccount createCreditAccount(IClient owner) {
+    public CreditAccount createCreditAccount(@NonNull IClient owner) {
         CreditAccount newAccount = new CreditAccount(owner, creditLimit, commission, idAccountCounter++);
         accounts.add(newAccount);
         return newAccount;
@@ -115,7 +114,7 @@ public class Bank extends Publisher implements IBank {
     /**
      * the method changes the credit limit and notifies the customers for whom it is valid
      *
-     * @param newCreditLimit
+     * @param newCreditLimit A new credit limit is being set
      */
     @Override
     public void changeCreditLimit(Double newCreditLimit) {
@@ -169,11 +168,9 @@ public class Bank extends Publisher implements IBank {
             Account sender = senderOptional.get();
             Account recipient = recipientOptional.get();
 
-            if (sender.withdraw(amountMoney)) {
-                recipient.deposit(amountMoney);
-                return true;
-            }
+            return sender.transfer(recipient, amountMoney);
         }
+
 
         return false;
     }
@@ -190,7 +187,20 @@ public class Bank extends Publisher implements IBank {
         return accounts.stream()
                 .filter(account -> account.getIdAccount().equals(idAccount))
                 .findFirst()
-                .map(account -> account.cancellationTransaction(idTransaction))
+                .map(account -> {
+                    Transaction transaction = account.cancellationTransaction(idTransaction);
+                    if (transaction.operationType() instanceof OperationType.Transfer transfer){
+                        deposit(idAccount, transaction.amountMoney());
+                        withdraw(transfer.getIdRecipient(), transaction.amountMoney());
+                        return true;
+                    } else if (transaction.operationType() instanceof OperationType.Withdraw) {
+                       deposit(idAccount, transaction.amountMoney());
+                       return true;
+                    } else if (transaction.operationType() instanceof OperationType.Deposit){
+                        withdraw(idAccount, transaction.amountMoney());
+                    }
+                    return null;
+                })
                 .orElse(false);
     }
 
