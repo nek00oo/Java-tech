@@ -1,6 +1,5 @@
 package ru.itmo.model.client;
 
-import lombok.NonNull;
 import ru.itmo.model.client.validate.IValidatorClient;
 
 import java.lang.IllegalArgumentException;

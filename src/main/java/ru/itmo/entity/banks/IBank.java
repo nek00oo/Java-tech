@@ -1,4 +1,6 @@
 package ru.itmo.entity.banks;
 
-public interface IBank extends IFinancialOperationManager, IAccountCreatable{
+import ru.itmo.entity.IPublisher;
+
+public interface IBank extends IFinancialOperationManager, IAccountCreatable, IPublisher {
 }

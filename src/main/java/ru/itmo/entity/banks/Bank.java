@@ -159,6 +159,12 @@ public class Bank extends Publisher implements IBank {
                 .orElse(false);
     }
 
+    /**
+     * @param idSenderAccount    The one who sends the money
+     * @param idRecipientAccount The one to whom the money is being sent
+     * @param amountMoney        The amount of money
+     * @return True if the transfer was successful, false otherwise.
+     */
     @Override
     public boolean transfer(Long idSenderAccount, Long idRecipientAccount, Double amountMoney) {
         Optional<Account> senderOptional = findAccountById(idSenderAccount);
@@ -170,7 +176,6 @@ public class Bank extends Publisher implements IBank {
 
             return sender.transfer(recipient, amountMoney);
         }
-
 
         return false;
     }
@@ -189,14 +194,14 @@ public class Bank extends Publisher implements IBank {
                 .findFirst()
                 .map(account -> {
                     Transaction transaction = account.cancellationTransaction(idTransaction);
-                    if (transaction.operationType() instanceof OperationType.Transfer transfer){
+                    if (transaction.operationType() instanceof OperationType.Transfer transfer) {
                         deposit(idAccount, transaction.amountMoney());
                         withdraw(transfer.getIdRecipient(), transaction.amountMoney());
                         return true;
                     } else if (transaction.operationType() instanceof OperationType.Withdraw) {
-                       deposit(idAccount, transaction.amountMoney());
-                       return true;
-                    } else if (transaction.operationType() instanceof OperationType.Deposit){
+                        deposit(idAccount, transaction.amountMoney());
+                        return true;
+                    } else if (transaction.operationType() instanceof OperationType.Deposit) {
                         withdraw(idAccount, transaction.amountMoney());
                     }
                     return null;

@@ -24,9 +24,10 @@ public class DepositAccount extends Account implements IInterestReceivable {
         if (startAmount < 0)
             throw new IllegalArgumentException("The start amount must be positive");
 
+        this.accumulatedInterest = 0.0;
         this.dateEndTerm = dateEndTerm;
         this.startAmount = startAmount;
-        this.balance = startAmount;
+        this.balance = 0.0;
     }
 
     /**
@@ -52,7 +53,7 @@ public class DepositAccount extends Account implements IInterestReceivable {
      */
     @Override
     public void accrueInterest(Double ratioInterestRate) {
-        accumulatedInterest += balance * ratioInterestRate;
+        accumulatedInterest += startAmount * ratioInterestRate;
     }
 
     /**

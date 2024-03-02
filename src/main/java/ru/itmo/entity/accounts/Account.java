@@ -51,10 +51,30 @@ public abstract class Account implements ISubscriber {
     }
 
     /**
+     * the method of transferring money between accounts
+     *
+     * @param recipient   the one to whom the money is being sent
+     * @param amountMoney the amount of money to transfer
+     * @return True if the transfer was successful, false otherwise.
+     */
+    public boolean transfer(Account recipient, Double amountMoney) {
+        if (balance < amountMoney)
+            return false;
+
+        if (withdraw(amountMoney)) {
+            recipient.deposit(amountMoney);
+            transactions.add(new Transaction(idTransactionCounter++, idAccount, amountMoney, new OperationType.Transfer(recipient.getIdAccount())));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * the method for canceling the transaction
      *
      * @param idTransaction id of the transaction to cancel
-     * @return True if the transaction cancellation was successful, false otherwise.
+     * @return Transaction if the transaction cancellation was successful, null otherwise.
      */
     public Transaction cancellationTransaction(Long idTransaction) {
         return transactions.stream()
@@ -67,6 +87,11 @@ public abstract class Account implements ISubscriber {
                 .orElse(null);
     }
 
+    @Override
+    public void update(String message) {
+        messages.add("received notification: " + message);
+    }
+
     /**
      * Withdraw money from a specified account.
      *
@@ -74,22 +99,4 @@ public abstract class Account implements ISubscriber {
      * @return True if the withdrawal was successful, false otherwise.
      */
     public abstract boolean withdraw(Double amountMoney);
-
-    public boolean transfer(Account recipient, Double amountMoney){
-        if (balance < amountMoney)
-            return false;
-
-        if (withdraw(amountMoney)){
-            recipient.deposit(amountMoney);
-            transactions.add(new Transaction(idTransactionCounter++, idAccount, amountMoney, new OperationType.Transfer(recipient.getIdAccount())));
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public void update(String message) {
-        messages.add("received notification: " + message);
-    }
 }
