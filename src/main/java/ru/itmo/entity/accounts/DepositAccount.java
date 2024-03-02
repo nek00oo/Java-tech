@@ -16,7 +16,14 @@ import java.util.Date;
 @Getter
 public class DepositAccount extends Account implements IInterestReceivable {
     private final Double startAmount;
+    /**
+     * interest accumulates here
+     */
     private Double accumulatedInterest;
+
+    /**
+     * account expiration date
+     */
     private Date dateEndTerm;
 
     public DepositAccount(IClient owner, Double startAmount, Long idAccount, Date dateEndTerm) {
