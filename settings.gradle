@@ -1,0 +1,6 @@
+rootProject.name = 'CatService'
+include 'cat-service'
+include 'owner-service'
+include 'api-gateway'
+include 'common:entities'
+

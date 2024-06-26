@@ -1,0 +1,14 @@
+/**
+ * Spring
+ */
+dependencies {
+    provided group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+}
+
+/**
+ * Jackson
+ */
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+}
