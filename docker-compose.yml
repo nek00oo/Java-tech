@@ -3,7 +3,7 @@ version: '3.9'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper
-    container_name: zookeeper
+    container_name: zookeeper_
     ports:
       - "2181:2181"
     environment:
@@ -17,7 +17,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka
-    container_name: kafka
+    container_name: kafka_
     ports:
       - "9092:9092"
     depends_on:
@@ -37,18 +37,10 @@ services:
   db:
     container_name: db_lab5
     image: postgres:latest
-    hostname: postgres
-    restart: unless-stopped
-    ports:
-      - "7432:5432"
-    healthcheck:
-      test: [ "CMD", "pg_isready","-d","postgres","-U","postgres" ]
-      interval: 5s
-      timeout: 1s
-      retries: 5
     environment:
-      - POSTGRES_PORT=7432
       - POSTGRES_USER=valera
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - "7432:5432"
     volumes:
-      - ../api-gateway/src/main/resources/db/migration/V1__init.sql:/docker-entrypoint-initdb.d/V1__init.sql
+      - ./api-gateway/src/main/resources/db/migration/V1__init.sql:/docker-entrypoint-initdb.d/V1__init.sql

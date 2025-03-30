@@ -8,6 +8,7 @@ dependencies {
  *  Postgres
  */
 dependencies {
+    implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql:42.2.24'
 }
 

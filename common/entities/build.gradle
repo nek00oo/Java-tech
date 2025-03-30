@@ -1,3 +1,11 @@
+bootJar {
+    enabled = false // Отключаем создание исполняемого JAR
+}
+
+jar {
+    enabled = true // Включаем создание обычного JAR (библиотеки)
+}
+
 /**
  * Spring
  */
